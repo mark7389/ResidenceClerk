@@ -1,0 +1,35 @@
+{
+  "name": "residenceclerk",
+  "version": "1.0.0",
+  "description": "A roommate bill management application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "node scripts/start-client.js",
+    "start": "concurrently \"nodemon server.js\" \"npm run client\"",
+    "build": "node scripts/build.js",
+    "installDeps": "yarn && cd client && yarn"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mark7389/ResidenceClerk.git"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.14.3",
+    "chai": "^4.1.2"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "path": "^0.12.7",
+    "mongoose": "^4.13.7",
+    "body-parser": "^1.18.2"
+  },
+  "author": "Mark Soliman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mark7389/ResidenceClerk/issues"
+  },
+  "homepage": "https://github.com/mark7389/ResidenceClerk#readme"
+}
