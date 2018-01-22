@@ -11,14 +11,14 @@ module.exports = {
 
              connection(config.user, config.pwd).then(db=>{
                 tempDb = new database(db);
-                tempDb.createUser(req.body.username, req.body.password, function(){
+                tempDb.createUser(req.body.username, req.body.password, req.body.nickname, function(){
                     let col = req.body.nickname + "HIVE";
                     tempDb.createCollection(col, function(){
                         let adminR = userRoles.hiveAdmin + req.body.username;
                         let memberR = userRoles.memberRole + req.body.username;
                         tempDb.createAdminRole(adminR, col, function(){
                             tempDb.createMemberRole(memberR, col, function(){
-                                tempDb.grantRole(req.body.username, adminR, col, function(){
+                                tempDb.grantRole(req.body.username, adminR, function(){
                                     res.status(200).json({msg:"user created"})
                                     db.close();
                                 });
@@ -49,12 +49,12 @@ module.exports = {
          console.log(req.user);
          console.log(dbs[req.user])
          console.log(req.params.name)
-         dbs[req.user].getUserInfo(req.params.name, function(err, member){
-               if(err){
-                   res.status(404).json({msg:"user not found"});
-               }
-                res.status(200).json(member);
-         })
+            dbs[req.user].getBills(req.params.name, function(err, bills){
+                if(err){
+                    res.status(404);
+                }
+                res.status(200).json(bills);
+            })
      }
 
 }
