@@ -2,6 +2,7 @@ const config = require("../config/config");
 const passport = require('../lib/passport');
 const connection = require('../lib/connection');
 var dbObjs = require("../lib/dbObjects");
+var dbs = dbObjs.dbObjs;
 const database = require("../lib/database");
 const userRoles = require('../lib/userRoles');
 module.exports = {
@@ -35,7 +36,7 @@ module.exports = {
                 dbObjs.connect(req.body.username, req.body.password);
                 res.json({msg:"login successful"})
             }else{
-                res.send("sorry");
+                res.status(401).json({msg:"not logged in"});
             }
      },
     
@@ -43,7 +44,17 @@ module.exports = {
 
            
 
+     },
+     findUser: function(req, res){
+         console.log(req.user);
+         console.log(dbs[req.user])
+         console.log(req.params.name)
+         dbs[req.user].getUserInfo(req.params.name, function(err, member){
+               if(err){
+                   res.status(404).json({msg:"user not found"});
+               }
+                res.status(200).json(member);
+         })
      }
-
 
 }

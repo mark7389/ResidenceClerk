@@ -6,29 +6,35 @@ class App extends Component {
   state = {
     username: "",
     password: "",
+    
     logged: false
   }
   componentDidMount(){
     axios.get("/api/bees/isAuth").then(res=>{
-      this.setState({logged:res.msg});
+      console.log(res);
+      this.setState({logged:res.data.msg});
     }).catch(err=>{
       console.log(err);
     })
   }
   handleChange = (event) => {
+    event.preventDefault();
+    const name = event.target.name;
+    const value = event.target.value;
       this.setState({
-        username: event.target.username,
-        password: event.target.password
+        [name]:value
       });
   }
   handleSubmit = event => {
     event.preventDefault();
     const data = {
       username: this.state.username,
-      password: this.state.password
+      password: this.state.password,
+      
     }
+    console.log(data);
     axios.post("/api/bees/login", data).then(res=>{
-      if(res.msg){
+      if(res.data.msg === "login successful"){
         this.setState({logged:true});
       }else{
         console.log(res);
@@ -41,9 +47,10 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.logged ? <h1>welcome</h1>:(<form>
-              <input type="text" name="username" onChange={this.handleChange}/>
-              <input type="password" name="password" onChange={this.handleChange}/>
-              <button type="button"  onClick={this.handleSubmit} />
+              <input type="text" name="username" value={this.state.username} onChange={this.handleChange}/>
+              <input type="password" name="password" value={this.state.password} onChange={this.handleChange}/>
+              
+              <button type="button"  onClick={this.handleSubmit}>submit</button>
         </form>)}
       </div>
     );

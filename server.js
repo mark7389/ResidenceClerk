@@ -8,9 +8,10 @@ const session = require("express-session");
 const MongoClient = require('mongodb').MongoClient;
 const passport = require('./lib/passport');
 const proxy = require('express-http-proxy');
+const logger = require('morgan');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
+app.use(logger('dev'));
 app.use(express.static("./client/build"));
 
 app.set('trust proxy', 1);
