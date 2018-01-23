@@ -1,4 +1,4 @@
-const config = require("../config/config");
+const config = require("../lib/config");
 const connection = require('../lib/connection');
 var dbObjs = require("../lib/dbObjects");
 var dbs = dbObjs.dbObjs;
@@ -17,11 +17,9 @@ module.exports = {
                         let memberR = userRoles.memberRole + req.body.username;
                         tempDb.createAdminRole(adminR, col, function(){
                             tempDb.createMemberRole(memberR, col, function(){
-                                tempDb.grantRole(req.body.username, adminR, col, function(){
-                                    tempDb.grantRole(req.body.username, memberR, col, function(){
-                                        res.status(200).json({msg:"user created"})
-                                        db.close();
-                                    })
+                                tempDb.grantRole(req.body.username, adminR, function(){
+                                    res.status(200).json({msg:"user created"})
+                                    db.close();
                                 });
                             });
                         });
@@ -52,9 +50,9 @@ module.exports = {
          }
      },
      grantAccess: function(req, res){
-        let memberR = userRoles.memberRole + req.user.client;
+        let collection = req.user.hives[0];
          if(dbs[req.user.client]){
-             dbs[req.user.client].grantRole(req.params.name, memberR, function(err, result){
+             dbs[req.user.client].addHiveUser(collection, req.params.name, function(err, result){
                  if(err){
                      res.status(403).json({msg:"unable to grant access"});
                  }
