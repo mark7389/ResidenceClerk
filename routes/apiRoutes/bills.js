@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const billsController = require('../../controllers/bills');
+const billsController = require('../../controllers').bills;
 
 router.route("/create").post(billsController.createBill);
 router.route("/update/shares").put(billsController.updateShares);

@@ -4,7 +4,10 @@ var dbs = dbObjs.dbObjs;
 module.exports = {
 
     findOne: function(req, res){
-      if()
+      
+    },
+    findUsers: function(req,res){
+      
     }
 
 
