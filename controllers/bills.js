@@ -29,7 +29,7 @@ module.exports = {
     },
     addBillMember: function(req,res){
       if(dbs[req.user.client]){
-        dbs[req.user.client].addBillShare(req.body.hive, req.body.member, req.body.billname, function(err,bill){
+        dbs[req.user.client].addBillShare(req.body.hive, req.body.member, function(err,bill){
           if(err){
             res.status(500).json({msg:"unable to add member"})
           }
@@ -38,18 +38,20 @@ module.exports = {
       }
     },
     findBills:function(req,res){
+      console.log(req.params.hive);
       if(dbs[req.user.client]){
         dbs[req.user.client].getBills(req.params.hive,function(err,doc){
           if(err){
             res.status(500).json({msg:"can't retrieve bills"});
           }
+          console.log("controller")
           res.status(200).json(doc);
         })
       }
     },
     findBill:function(req, res){
       if(dbs[req.user.client]){
-        dbs[req.user.client].getBill(req.params.billname,req.params.hive,function(err,doc){
+        dbs[req.user.client].getBill(req.params.name,req.params.hive,function(err,doc){
           if(err){
             res.status(500).json({msg:"can't retrieve bill"});
           }
