@@ -17,11 +17,24 @@ const SignUpForm = (props)=>{
             <form className="forms">
                 <Input floatingLabelText="Email"
                        errorText={props.EmailErr}
-                       onChange={props.handleInputChange}
+                       onChange={props.onChange}
+                       name="username"
+                       type="text"
+                       value={props.username}
                        /><br/>
-                <Input floatingLabelText="Password"/><br />
-                <Input floatingLabelText="Nickname"/><br />
-                
+                <Input floatingLabelText="Password"
+                       onChange={props.onChange}
+                       name="password"
+                       type="password"
+                       value={props.password}
+                       errorText={props.PasswordError}/><br />
+                <Input floatingLabelText="Nickname"
+                       onChange={props.onChange}
+                       name="nickname"
+                       type="text"
+                       value={props.nickname}
+                       errorText={props.nicknameError}/><br /><br />
+                <SignUpButton onClick={props.SignUpRequest}/>
             </form>
         </Paper>
     </div>

@@ -8,7 +8,7 @@ const Input = (props)=>{
     <TextField  
     floatingLabelFocusStyle={{color:"rgb(237,187,0)"}}
     underlineFocusStyle={{borderColor:"rgb(237,187,0)"}}
-    
+    inputStyle={{color:"rgb(73,81,91)"}}
     {...props} />
   )
 }

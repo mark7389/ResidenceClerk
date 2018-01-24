@@ -21,8 +21,8 @@ h1{
   margin:0;
   padding: 5%;
   width:45%;
-  color:rgb(73,81,91);
-  background-color: whitesmoke;
+  color:rgb(237,187,0);
+  background-color:whitesmoke;
 }
 .form-container:after{
   display: block;
@@ -30,5 +30,5 @@ h1{
   clear:both;
 }
 .form-container{
-  background-color: rgba(237,187,0,0.6) !important;
+  background-color: rgb(237,187,0) !important;
 }
