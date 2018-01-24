@@ -7,12 +7,13 @@ const userRoles = require('../lib/userRoles');
 module.exports = {
 
      createUser: function (req, res){
-
+        console.log(req.body);
         connection(config.user, config.pwd).then(db=>{
                 tempDb = new database(db);
                 tempDb.getUserInfo(req.body.username, function(err, user){
-                    if(user){
-                        res.status(500).json({msg:"user already exists, pick another username"})
+                    console.log(user);
+                    if(user.users.length){
+                        res.status(304).json({msg:"username not valid or already exits"});
                     }
                     else{
                 

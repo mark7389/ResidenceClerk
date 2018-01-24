@@ -3,7 +3,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import './Landing.css';
 import NavBar from '../../components/NavBar';
 import SignUpForm from '../../components/SignUpForm';
-
+import LoginForm from '../../components/LoginForm';
+import {default as API} from '../../util/APIUsers/API';
 class Landing extends Component {
 
   state = {
@@ -14,11 +15,28 @@ class Landing extends Component {
     nickname:"",
     EmailErr:"",
     PasswordErr:"",
-    nicknameErr:""
+    nicknameErr:"",
+    accountCreated:""
   }
 
-  handleLoginRequest = ()=>{
-
+  handleLoginRequest = (e)=>{
+    e.preventDefault();
+    let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    console.log(re.test(this.state.username));
+    if(this.state.username === "" || !re.test(this.state.username)){
+        this.setState({EmailErr:"invalid email"})
+    }
+    else if(this.state.password.length < 6 || this.state.password === ""){
+      this.setState({PasswordErr:"invalid password"});
+    }
+    else{
+        API.Login(this.state.username, this.state.password).then(res=>{
+          console.log(res.data.msg);
+          window.location.href="/Home"
+        }).catch(err=>{
+          console.log(err);
+        })
+    }
   }
 
   handleSignUpRequest = (e)=>{
@@ -35,16 +53,29 @@ class Landing extends Component {
           this.setState({nicknameErr:"nickname required!"})
         }
         else{
-          //do api call
+          //do api call set signUp to false
+          
+          API.SignUp(this.state.username,this.state.password,this.state.nickname)
+          .then(result=>{
+            console.log(result.data);
+            if(result.data.msg === "user created"){
+              this.setState({signUp:false,
+                            accountCreated:"Thank you for signing up now you can login!"})
+            }
+          }
+
+          ).catch(err=>{
+            console.log(err);
+          })
         }
   }
 
   handleLoginClick = ()=>{
-
+        
+        console.log("here")
+        this.setState({signUp:false});
   }
-  handleInputChange = ()=>{
-
-  }
+  
   handleInputChange = (event)=>{
     event.preventDefault();
     const name=event.target.name;
@@ -60,10 +91,14 @@ render(){
       <MuiThemeProvider>
        <div>
         <NavBar signedIn={this.state.signedIn}
-                LoginClick={this.handleLoginClick}/>
+                onClick={this.handleLoginClick}/>
         {this.state.signUp ? (<SignUpForm {...this.state}
                               SignUpRequest={this.handleSignUpRequest}
-                              onChange={this.handleInputChange}/>):(<div />)}
+                              onChange={this.handleInputChange}/>):
+                              (<LoginForm 
+                                message={this.state.accountCreated}
+                                LoginRequest={this.handleLoginRequest}
+                                onChange={this.handleInputChange} />)}
         </div>
       </MuiThemeProvider>
     )

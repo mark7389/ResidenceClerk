@@ -7,7 +7,8 @@ const SignUpButton = (props)=>{
     textShadow:"0px 0.4px 0px rgb(73,81,91)",
     margin:0,
     padding:0,
-    border:"none"
+    border:"none",
+    boxShadow:"none"
   }
   return (<RaisedButton 
             fullWidth={true}

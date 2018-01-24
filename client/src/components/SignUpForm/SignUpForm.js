@@ -13,7 +13,7 @@ const SignUpForm = (props)=>{
   return(
     <div className="signUp">
         <Paper className="form-container" style={styles} zDepth={1}>
-            <h1>Sign Up</h1>
+            <span className="signupheader"><h1>Sign Up</h1></span>
             <form className="forms">
                 <Input floatingLabelText="Email"
                        errorText={props.EmailErr}
