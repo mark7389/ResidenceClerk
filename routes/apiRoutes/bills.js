@@ -1,11 +1,10 @@
-const router = require("express").Router();
 const billsController = require('../../controllers').bills;
-
+const router = require("express").Router();
 router.route("/create").post(billsController.createBill);
-router.route("/update/shares").put(billsController.updateShares);
-router.route("/find/:bill/:hive").get(billsController.findBill);
-router.route("/find/all/:hive").get(billsController.findBills);
-router.route("/update/pay/").put(billsController.updatePaid);
-router.route("/update/addshare").put(billsController.addBillMember);
+router.route("/updateshares").put(billsController.updateShares);
+router.route("/find/:name/:hive").get(billsController.findBill);
+router.route("/all/:hive").get(billsController.findBills);
+router.route("/updatepay/").put(billsController.updatePaid);
+router.route("/updateaddshare").put(billsController.addBillMember);
 
 module.exports = router;
