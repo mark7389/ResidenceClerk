@@ -29,7 +29,7 @@ module.exports = {
     },
     addBillMember: function(req,res){
       if(dbs[req.user.client]){
-        dbs[req.user.client].addBillShare(req.body.hive, req.body.member, function(err,bill){
+        dbs[req.user.client].addBillShare(req.body.hive, req.body.member, req.body.billname, function(err,bill){
           if(err){
             res.status(500).json({msg:"unable to add member"})
           }
