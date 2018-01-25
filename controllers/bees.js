@@ -73,6 +73,21 @@ module.exports = {
                  res.status(200).json({msg:"access granted"});
              } )
          }
+     },
+     getHiveUsers: function(req, res){
+         let collection = req.params.hive;
+         console.log(collection);
+         if(dbs[req.user.client]){
+            dbs[req.user.client].getHiveUsers(collection, function(err, users){
+                if(err){
+                    res.status(500).json({msg:"users not retrievied"})
+                }
+                console.log(users);
+                res.status(200).json(users);
+            })
+         }else{
+             res.status(500).json({msg:"database connection error"})
+         }
      }
 
 }

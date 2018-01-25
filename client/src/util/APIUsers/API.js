@@ -18,6 +18,8 @@ export default {
   },
   getHives: function(){
     return axios.get("/api/bees/getHives");
-  }
-
+  },
+  getRoomMates: function(currentHive){
+   return axios.get(`/api/bees/roommates/${currentHive}`);
+  } 
 };
