@@ -25,7 +25,7 @@ class Landing extends Component {
           window.location.href="/Home";
         }
     }).catch(err=>{
-      console.log(err);
+      
     })
   }
   handleLoginRequest = (e)=>{

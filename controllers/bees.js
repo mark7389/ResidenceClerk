@@ -83,7 +83,7 @@ module.exports = {
                     res.status(500).json({msg:"users not retrievied"})
                 }
                 console.log(users);
-                res.status(200).json(users);
+                res.status(200).json({roommates:users,user:req.user.client});
             })
          }else{
              res.status(500).json({msg:"database connection error"})

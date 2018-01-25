@@ -5,7 +5,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import NavBar from '../../components/NavBar/NavBar';
 import SideNav from '../../components/SideNav';
 import BillForm from '../../components/BillForm/BillForm';
-
+import Input from '../../components/Input';
+import Bills from '../Bills';
 class Home extends Component {
       state = {
         signedIn: true,
@@ -22,7 +23,8 @@ class Home extends Component {
           billvalue:0
         },
         roommates:[],
-        roommateform:""
+        roommateform:"",
+        currentUser:""
           
       }
       componentDidMount(){
@@ -35,12 +37,14 @@ class Home extends Component {
                  })
                
             }).catch(err=>{
+              
               window.location.href="/"
             })
       }
       handleInputChangeRoomMate = (e)=>{
 
       }
+      
       handleInputChangeBill = (e, date, payload)=>{
           if(e && !payload) { e.preventDefault();
             const value=e.target.value;
@@ -53,6 +57,7 @@ class Home extends Component {
             this.setState({billform:dummy}
             );
           }
+         
             else if(payload){
                 let dummy= {...this.state.billform}
                 dummy.billcategory = payload;
@@ -65,21 +70,26 @@ class Home extends Component {
             }
       }
       handleSelectionBill = (event, key, payload)=>{
-            const dummy = this.state.bees;
+            let dummy = this.state.billform;
+            console.log(payload);
             payload.map(value=>{
-              dummy.push({name:value.name});
+              dummy.bees.push({name:value});
             })
-            this.setState({bees:dummy});
+            this.setState({billform:dummy});
       }
-      selectionRenderer = (values)=>{
-        switch (values.length){
-          case 0: return '';
-          case 1: return this.state.bees[0].name;
-          default: return `${values.length} roommates selected`;
+      selectionRenderer = (value)=>{
+        switch (value.length){
+          case 0: return 'pick roommates';
+          case 1: return this.state.billform.bees[0].name;
+          default: return `${value.length} roommates selected`;
         }
       }
       getBills = ()=>{
-
+        APIBills.findAll(this.state.currentHive).then(bills=>{
+              this.setState({data:bills.data})
+        }).catch(err=>{
+          console.log(err);
+        })
       }
       getBill = ()=>{
 
@@ -88,20 +98,65 @@ class Home extends Component {
 
       }
       createBill = () =>{
+          let split = this.state.billform.bees.length;
+          let share = ((this.state.billform.billvalue)/(split))/(this.state.billform.billvalue);
+          let dummy = this.state.billform;
 
+          let newBees=dummy.bees.map(bee=>{
+            return {name:bee.name, share:share, paid:false}
+          })
+          dummy.bees = newBees;
+          dummy.hive = this.state.currentHive;
+          APIBills.create(dummy).then(res=>{
+            console.log(res.data);
+            
+            this.setView(this.state.currentHive)
+          }).catch(err=>{
+            console.log(err);
+          })
       }
-      getHiveMembers = ()=>{
-
+      payBill = (billname) =>{
+        let member;
+        
+        console.log(billname);
+          const data = {
+            billname:billname,
+            hive:this.state.currentHive,
+            member:this.state.currentUser
+          }
+          APIBills.pay(data).then(res=>{
+            console.log(res);
+            if(res){
+                this.getBills();
+            }
+          }).catch(err=>{
+            console.log(err)
+          })
       }
       
       setView = (view)=>{
         if(view.indexOf("HIVE") > -1){
           APIUsers.getRoomMates(view).then(res=>{
-            console.log(res.data);
-            this.setState({open:false,
-              currentHive:view,
-              view:"bills",
-              roommates:res.data});
+            
+            APIBills.findAll(view).then(bills=>{
+                
+                this.setState({open:false,
+                  currentHive:view,
+                  view:"bills",
+                  billform:{
+                    billname:"",
+                    billcategory:"",
+                    billdate:{},
+                    bees:[],
+                    billvalue:0
+                  },
+                  data:bills.data,
+                  roommates:res.data.roommates,
+                  currentUser:res.data.user});
+            }).catch(err=>{
+
+            })
+            
           }).catch(err=>{
             console.log(err);
           })
@@ -119,15 +174,18 @@ class Home extends Component {
                                             {...this.state.billform}
                                             roommates={this.state.roommates} 
                                             selectionRenderer={this.selectionRenderer}
-                                            onRoommateSelect={this.handleSelectionBill}/>;
-        
+                                            onRoommateSelect={this.handleSelectionBill}
+                                            
+                                            createBill={this.createBill}/>;
+          case "bills": return <Bills data={this.state.data} pay={this.payBill} user={this.state.currentUser}/>;
         }
           
         
       }
       handleClose = (event)=>{
-        event.preventDefault();
+        
         if(event){
+        
         const view = event.target.innerHTML;
         console.log(view);
         this.setView(view);

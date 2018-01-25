@@ -60,6 +60,7 @@ module.exports = {
       }
     },
     updatePaid:function(req, res){
+      console.log(req.body);
       if(dbs[req.user.client]){
         dbs[req.user.client].updateBillPayOne(req.body.hive,req.body.billname,req.body.member,function(err, bill){
             if(err){
