@@ -14,12 +14,16 @@ router.route("/getHives").get(function(req, res){
 })
 router.route("/roommates/:hive").get(beesController.getHiveUsers);
 router.route("/isAuth").get(function(req, res){
-    console.log(req.user);
+        if(req.user){
           if(db[req.user.client]){
               res.status(200).json({msg:true})
           }else{
               res.status(304).json({msg:false});
           }
+        }
+        else{
+            res.status(404);
+        }
 });
 
 module.exports = router;
