@@ -1,0 +1,28 @@
+h3{
+  margin:0;
+  padding: 3px;
+  display: inline;
+  box-shadow: 0px 1px 4px rgb(223, 217, 212);
+}
+span{
+  float:left;
+  height: 41px;
+}
+.hive{
+  background:whitesmoke;
+  color:rgb(237,187,0);
+  font-style: italic;
+  border-top: 2px solid whitesmoke;
+  border-bottom: 2px solid whitesmoke;
+  border-right:2px solid whitesmoke;
+  
+  text-shadow: 0px 1px 0px whitesmoke;
+}
+.bee{
+  background:rgb(237,187,0);
+  border-top: 2px solid whitesmoke;
+  border-bottom: 2px solid whitesmoke;
+  color:whitesmoke;
+  border-left:2px solid whitesmoke;
+  text-shadow: 0px 1px 0px whitesmoke;
+}

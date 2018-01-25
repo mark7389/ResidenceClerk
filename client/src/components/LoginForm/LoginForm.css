@@ -1,0 +1,40 @@
+.login{
+  margin:auto;
+  margin-top:7%;
+  width: 45%;
+  min-height:350px;
+  
+}
+
+.loginMSG{
+  color:whitesmoke;
+  float: left;
+  text-align: center;
+  width:30%;
+  overflow: auto;
+  vertical-align: middle;
+  padding: 16px;
+  text-shadow: 0px 1px 0px rgb(73,81,91);
+  
+}
+h1{
+  margin: auto;
+  text-align: center;
+  width: 100%;
+}
+.forms{
+  float:right;
+  margin:0;
+  padding: 5%;
+  width:45%;
+  color:rgb(237,187,0);
+  background-color:whitesmoke;
+}
+.form-container:after{
+  display: block;
+  content:"";
+  clear:both;
+}
+.form-container{
+  background-color: rgb(237,187,0) !important;
+}

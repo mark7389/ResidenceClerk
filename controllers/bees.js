@@ -7,27 +7,41 @@ const userRoles = require('../lib/userRoles');
 module.exports = {
 
      createUser: function (req, res){
-
-             connection(config.user, config.pwd).then(db=>{
+        console.log(req.body);
+        connection(config.user, config.pwd).then(db=>{
                 tempDb = new database(db);
-                tempDb.createUser(req.body.username, req.body.password, req.body.nickname, function(){
-                    let col = req.body.nickname + "HIVE";
-                    tempDb.createCollection(col, function(){
-                        let adminR = userRoles.hiveAdmin + req.body.username;
-                        let memberR = userRoles.memberRole + req.body.username;
-                        tempDb.createAdminRole(adminR, col, function(){
-                            tempDb.createMemberRole(memberR, col, function(){
-                                tempDb.grantRole(req.body.username, adminR, function(){
-                                    res.status(200).json({msg:"user created"})
-                                    db.close();
+                tempDb.getUserInfo(req.body.username, function(err, user){
+                    console.log(user);
+                    if(user.users.length){
+                        res.status(304).json({msg:"username not valid or already exits"});
+                    }
+                    else{
+                
+                            tempDb.createUser(req.body.username, req.body.password, req.body.nickname, function(err,user){
+                                
+                                let col = req.body.nickname + "HIVE";
+                                tempDb.createCollection(col, function(err, collection){
+                                    
+                                    let adminR = userRoles.hiveAdmin + req.body.username;
+                                    let memberR = userRoles.memberRole + req.body.username;
+                                    tempDb.createAdminRole(adminR, col, function(err, arole){
+                                        
+                                        tempDb.createMemberRole(memberR, col, function(err, mrole){
+                                            
+                                            tempDb.grantRole(req.body.username, adminR, function(err, granted){
+                                                
+                                                res.status(200).json({msg:"user created"})
+                                                db.close();
+                                            });
+                                        });
+                                    });
                                 });
                             });
-                        });
-                    });
-                });
-            }).catch(err=>{
-                    console.log(err);
+            }
             });
+        }).catch(err=>{
+                res.status(304).send("connection error");
+        });
     },
 
     login: function(req, res){
