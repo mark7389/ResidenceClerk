@@ -4,6 +4,7 @@ import {default as APIBills} from '../../util/APIbills/API';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import NavBar from '../../components/NavBar/NavBar';
 import SideNav from '../../components/SideNav';
+import BillForm from '../../components/BillForm/BillForm';
 
 class Home extends Component {
       state = {
@@ -16,8 +17,8 @@ class Home extends Component {
         billform:{
           billname:"",
           billcategory:"",
-          billdate:"",
-          bees:{},
+          billdate:{},
+          bees:[],
           billvalue:0
         },
         roommates:[],
@@ -40,18 +41,42 @@ class Home extends Component {
       handleInputChangeRoomMate = (e)=>{
 
       }
-      handleInputChangeBill = (e)=>{
-        const value=e.target.value;
-        const name=e.target.name;
-        let dummy = {...this.state.billform};
-        dummy[name] = value;
-        this.setState(dummy);
+      handleInputChangeBill = (e, date, payload)=>{
+          if(e && !payload) { e.preventDefault();
+            const value=e.target.value;
+            const name=e.target.name;
+            let dummy = {...this.state.billform};
+            console.log(dummy);
+          console.log(name);
+          dummy[name]=value;
+          console.log(dummy);
+            this.setState({billform:dummy}
+            );
+          }
+            else if(payload){
+                let dummy= {...this.state.billform}
+                dummy.billcategory = payload;
+                this.setState({billform:dummy});
+            }
+            else{
+              let dummy = {...this.state.billform}
+              dummy.billdate=date
+              this.setState({billform:dummy});
+            }
       }
-      handleSelectionBill = (event)=>{
-        const value=event.target.value;
-        let dummy = {...this.state.billform};
-        dummy.billcategory = value;
-        this.setState(dummy);
+      handleSelectionBill = (event, key, payload)=>{
+            const dummy = this.state.bees;
+            payload.map(value=>{
+              dummy.push({name:value.name});
+            })
+            this.setState({bees:dummy});
+      }
+      selectionRenderer = (values)=>{
+        switch (values.length){
+          case 0: return '';
+          case 1: return this.state.bees[0].name;
+          default: return `${values.length} roommates selected`;
+        }
       }
       getBills = ()=>{
 
@@ -90,7 +115,12 @@ class Home extends Component {
       }
       getCurrentView = ()=>{
         switch(this.state.view){
-          
+          case "Add Bill": return <BillForm onChange={this.handleInputChangeBill}
+                                            {...this.state.billform}
+                                            roommates={this.state.roommates} 
+                                            selectionRenderer={this.selectionRenderer}
+                                            onRoommateSelect={this.handleSelectionBill}/>;
+        
         }
           
         
