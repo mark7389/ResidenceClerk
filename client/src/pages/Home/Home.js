@@ -7,6 +7,7 @@ import SideNav from '../../components/SideNav';
 import BillForm from '../../components/BillForm/BillForm';
 import Input from '../../components/Input';
 import Bills from '../Bills';
+import RoomMates from '../RoomMates/RoomMates';
 class Home extends Component {
       state = {
         signedIn: true,
@@ -24,6 +25,7 @@ class Home extends Component {
         },
         roommates:[],
         roommateform:"",
+        roommateformResult:"",
         currentUser:""
           
       }
@@ -42,7 +44,11 @@ class Home extends Component {
             })
       }
       handleInputChangeRoomMate = (e)=>{
-
+                const name = e.target.name;
+                const value = e.target.value;
+                this.setState({
+                  [name]:value
+                })
       }
       
       handleInputChangeBill = (e, date, payload)=>{
@@ -91,11 +97,26 @@ class Home extends Component {
           console.log(err);
         })
       }
-      getBill = ()=>{
-
+      searchDone = ()=>{
+          this.setView(this.state.currentHive);
       }
       addUser = ()=>{
-
+              
+            APIUsers.addRoommate(this.state.roommateform).then(res=>{
+                  if(res.data.msg === "access granted")
+                  {this.setState({
+                    roommateformResult:"Roommate Account found, successfully added!",
+                    roommateform:""
+                  })}
+                  else{
+                    this.setState({
+                      roommateformResult:"No Account Found",
+                      roommateform:""
+                    })
+                  }
+            }).catch(err=>{
+                  
+            })
       }
       createBill = () =>{
           let split = this.state.billform.bees.length;
@@ -178,6 +199,8 @@ class Home extends Component {
                                             
                                             createBill={this.createBill}/>;
           case "bills": return <Bills data={this.state.data} pay={this.payBill} user={this.state.currentUser}/>;
+          case "Add Roommate": return <RoomMates  done={this.searchDone} result={this.state.roommateformResult} addRoommate={this.addUser} InputChange={this.handleInputChangeRoomMate}/>;
+          default: return <Bills data={this.state.data} pay={this.payBill} user={this.state.currentUser}/>;
         }
           
         

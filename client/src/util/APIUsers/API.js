@@ -21,5 +21,8 @@ export default {
   },
   getRoomMates: function(currentHive){
    return axios.get(`/api/bees/roommates/${currentHive}`);
+  },
+  addRoommate: function(roommate){
+    return axios.get(`/api/bees/grant/${roommate}`);
   } 
 };

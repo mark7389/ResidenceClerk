@@ -64,13 +64,16 @@ module.exports = {
          }
      },
      grantAccess: function(req, res){
+         console.log(req.user);
         let collection = req.user.hives[0];
          if(dbs[req.user.client]){
              dbs[req.user.client].addHiveUser(collection, req.params.name, function(err, result){
-                 if(err){
-                     res.status(403).json({msg:"unable to grant access"});
+                 if(result === null){
+                     res.send(err);
+                 }else{
+                    res.status(200).json({msg:"access granted"});
                  }
-                 res.status(200).json({msg:"access granted"});
+                 
              } )
          }
      },
