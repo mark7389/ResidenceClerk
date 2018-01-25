@@ -12,6 +12,12 @@ export default {
           password:password,
           nickname:nickname
         });
+  },
+  IsAuth: function(){
+    return axios.get("/api/bees/isAuth");
+  },
+  getHives: function(){
+    return axios.get("/api/bees/getHives");
   }
 
 };

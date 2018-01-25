@@ -15,7 +15,10 @@ app.use(logger('dev'));
 app.use(express.static("./client/build"));
 
 app.set('trust proxy', 1);
-app.use(session({secret: "beesnees", proxy:true, resave: true, saveUninitialized: true}));
+app.use(session({secret: "beesnees", proxy:true, resave: true, saveUninitialized: true, cookie:{
+      expires:new Date(Date.now()+14400000),
+      maxAge:14400000
+}}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(routes);

@@ -4,6 +4,7 @@ import './Landing.css';
 import NavBar from '../../components/NavBar';
 import SignUpForm from '../../components/SignUpForm';
 import LoginForm from '../../components/LoginForm';
+import LoginButton from '../../components/NavBar/LoginButton';
 import {default as API} from '../../util/APIUsers/API';
 class Landing extends Component {
 
@@ -18,10 +19,18 @@ class Landing extends Component {
     nicknameErr:"",
     accountCreated:""
   }
-
+  componentDidMount(){
+    API.IsAuth().then(res=>{
+        if(res.data.msg){
+          window.location.href="/Home";
+        }
+    }).catch(err=>{
+      console.log(err);
+    })
+  }
   handleLoginRequest = (e)=>{
     e.preventDefault();
-    let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let re = /^(([^<>()[\]\\.,;:\s@]+(\.[^<>()[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     console.log(re.test(this.state.username));
     if(this.state.username === "" || !re.test(this.state.username)){
         this.setState({EmailErr:"invalid email"})
@@ -41,7 +50,7 @@ class Landing extends Component {
 
   handleSignUpRequest = (e)=>{
         e.preventDefault();
-        let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let re = /^(([^<>()[\]\\.,;:\s@]+(\.[^<>()[\]\\.,;:\s@]+)*)|(.+))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         console.log(re.test(this.state.username));
         if(this.state.username === "" || !re.test(this.state.username)){
             this.setState({EmailErr:"invalid email"})
@@ -91,7 +100,8 @@ render(){
       <MuiThemeProvider>
        <div>
         <NavBar signedIn={this.state.signedIn}
-                onClick={this.handleLoginClick}/>
+                onClick={this.handleLoginClick}
+                rightIcon={<LoginButton/>}/>
         {this.state.signUp ? (<SignUpForm {...this.state}
                               SignUpRequest={this.handleSignUpRequest}
                               onChange={this.handleInputChange}/>):
