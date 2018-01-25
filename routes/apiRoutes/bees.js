@@ -12,6 +12,7 @@ router.route("/getHives").get(function(req, res){
         res.json({hives:req.user.hives});
     }
 })
+router.route("/roommates/:hive").get(beesController.getHiveUsers);
 router.route("/isAuth").get(function(req, res){
     console.log(req.user);
           if(db[req.user.client]){

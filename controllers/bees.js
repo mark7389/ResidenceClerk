@@ -64,14 +64,32 @@ module.exports = {
          }
      },
      grantAccess: function(req, res){
+         console.log(req.user);
         let collection = req.user.hives[0];
          if(dbs[req.user.client]){
              dbs[req.user.client].addHiveUser(collection, req.params.name, function(err, result){
-                 if(err){
-                     res.status(403).json({msg:"unable to grant access"});
+                 if(result === null){
+                     res.send(err);
+                 }else{
+                    res.status(200).json({msg:"access granted"});
                  }
-                 res.status(200).json({msg:"access granted"});
+                 
              } )
+         }
+     },
+     getHiveUsers: function(req, res){
+         let collection = req.params.hive;
+         console.log(collection);
+         if(dbs[req.user.client]){
+            dbs[req.user.client].getHiveUsers(collection, function(err, users){
+                if(err){
+                    res.status(500).json({msg:"users not retrievied"})
+                }
+                console.log(users);
+                res.status(200).json({roommates:users,user:req.user.client});
+            })
+         }else{
+             res.status(500).json({msg:"database connection error"})
          }
      }
 

@@ -4,6 +4,10 @@ import {default as APIBills} from '../../util/APIbills/API';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import NavBar from '../../components/NavBar/NavBar';
 import SideNav from '../../components/SideNav';
+import BillForm from '../../components/BillForm/BillForm';
+import Input from '../../components/Input';
+import Bills from '../Bills';
+import RoomMates from '../RoomMates/RoomMates';
 class Home extends Component {
       state = {
         signedIn: true,
@@ -11,42 +15,174 @@ class Home extends Component {
         data:"",
         open:false,
         hives:[],
-        currentHive: ""
+        currentHive: "",
+        billform:{
+          billname:"",
+          billcategory:"",
+          billdate:{},
+          bees:[],
+          billvalue:0
+        },
+        roommates:[],
+        roommateform:"",
+        roommateformResult:"",
+        currentUser:""
+          
       }
       componentDidMount(){
             APIUsers.IsAuth().then(res=>{
-                  APIUsers.getHives().then(res=>{
-                        this.setState({hives:res.data.hives,
-                                      currentHive:res.data.hives[0]});
-                        console.log(this.state.hives);
-                  }).catch(err=>{
-
-                  })
+                 APIUsers.getHives().then(hives=>{
+                   console.log(hives);
+                        this.setState({hives:hives.data.hives});
+                 }).catch(err=>{
+                      console.log(err);
+                 })
+               
             }).catch(err=>{
+              
               window.location.href="/"
             })
       }
-      getBills = ()=>{
-
+      handleInputChangeRoomMate = (e)=>{
+                const name = e.target.name;
+                const value = e.target.value;
+                this.setState({
+                  [name]:value
+                })
       }
-      getBill = ()=>{
-
+      
+      handleInputChangeBill = (e, date, payload)=>{
+          if(e && !payload) { e.preventDefault();
+            const value=e.target.value;
+            const name=e.target.name;
+            let dummy = {...this.state.billform};
+            console.log(dummy);
+          console.log(name);
+          dummy[name]=value;
+          console.log(dummy);
+            this.setState({billform:dummy}
+            );
+          }
+         
+            else if(payload){
+                let dummy= {...this.state.billform}
+                dummy.billcategory = payload;
+                this.setState({billform:dummy});
+            }
+            else{
+              let dummy = {...this.state.billform}
+              dummy.billdate=date
+              this.setState({billform:dummy});
+            }
+      }
+      handleSelectionBill = (event, key, payload)=>{
+            let dummy = this.state.billform;
+            console.log(payload);
+            payload.map(value=>{
+              dummy.bees.push({name:value});
+            })
+            this.setState({billform:dummy});
+      }
+      selectionRenderer = (value)=>{
+        switch (value.length){
+          case 0: return 'pick roommates';
+          case 1: return this.state.billform.bees[0].name;
+          default: return `${value.length} roommates selected`;
+        }
+      }
+      getBills = ()=>{
+        APIBills.findAll(this.state.currentHive).then(bills=>{
+              this.setState({data:bills.data})
+        }).catch(err=>{
+          console.log(err);
+        })
+      }
+      searchDone = ()=>{
+          this.setView(this.state.currentHive);
       }
       addUser = ()=>{
-
+              
+            APIUsers.addRoommate(this.state.roommateform).then(res=>{
+                  if(res.data.msg === "access granted")
+                  {this.setState({
+                    roommateformResult:"Roommate Account found, successfully added!",
+                    roommateform:""
+                  })}
+                  else{
+                    this.setState({
+                      roommateformResult:"No Account Found",
+                      roommateform:""
+                    })
+                  }
+            }).catch(err=>{
+                  
+            })
       }
       createBill = () =>{
+          let split = this.state.billform.bees.length;
+          let share = ((this.state.billform.billvalue)/(split))/(this.state.billform.billvalue);
+          let dummy = this.state.billform;
 
+          let newBees=dummy.bees.map(bee=>{
+            return {name:bee.name, share:share, paid:false}
+          })
+          dummy.bees = newBees;
+          dummy.hive = this.state.currentHive;
+          APIBills.create(dummy).then(res=>{
+            console.log(res.data);
+            
+            this.setView(this.state.currentHive)
+          }).catch(err=>{
+            console.log(err);
+          })
       }
-      getHiveMembers = ()=>{
-
+      payBill = (billname) =>{
+        let member;
+        
+        console.log(billname);
+          const data = {
+            billname:billname,
+            hive:this.state.currentHive,
+            member:this.state.currentUser
+          }
+          APIBills.pay(data).then(res=>{
+            console.log(res);
+            if(res){
+                this.getBills();
+            }
+          }).catch(err=>{
+            console.log(err)
+          })
       }
       
       setView = (view)=>{
         if(view.indexOf("HIVE") > -1){
-          this.setState({open:false,
-                         currentHive:view,
-                         view:"bills"})
+          APIUsers.getRoomMates(view).then(res=>{
+            
+            APIBills.findAll(view).then(bills=>{
+                
+                this.setState({open:false,
+                  currentHive:view,
+                  view:"bills",
+                  billform:{
+                    billname:"",
+                    billcategory:"",
+                    billdate:{},
+                    bees:[],
+                    billvalue:0
+                  },
+                  data:bills.data,
+                  roommates:res.data.roommates,
+                  currentUser:res.data.user});
+            }).catch(err=>{
+
+            })
+            
+          }).catch(err=>{
+            console.log(err);
+          })
+          
+          
         }
         else{
           this.setState({open:false,
@@ -55,14 +191,26 @@ class Home extends Component {
       }
       getCurrentView = ()=>{
         switch(this.state.view){
-          
+          case "Add Bill": return <BillForm onChange={this.handleInputChangeBill}
+                                            {...this.state.billform}
+                                            roommates={this.state.roommates} 
+                                            selectionRenderer={this.selectionRenderer}
+                                            onRoommateSelect={this.handleSelectionBill}
+                                            
+                                            createBill={this.createBill}/>;
+          case "bills": return <Bills data={this.state.data} pay={this.payBill} user={this.state.currentUser}/>;
+          case "Add Roommate": return <RoomMates  done={this.searchDone} result={this.state.roommateformResult} addRoommate={this.addUser} InputChange={this.handleInputChangeRoomMate}/>;
+          default: return <Bills data={this.state.data} pay={this.payBill} user={this.state.currentUser}/>;
         }
           
         
       }
-      handleClose = (e)=>{
-        if(e){
-        const view = e.target.value;
+      handleClose = (event)=>{
+        
+        if(event){
+        
+        const view = event.target.innerHTML;
+        console.log(view);
         this.setView(view);
         }
         else{
