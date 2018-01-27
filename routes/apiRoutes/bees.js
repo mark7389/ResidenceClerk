@@ -22,7 +22,7 @@ router.route("/isAuth").get(function(req, res){
           }
         }
         else{
-            res.status(404);
+            res.redirect("/");
         }
 });
 
