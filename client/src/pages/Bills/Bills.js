@@ -23,7 +23,7 @@ const Bills = (props)=>{
                 return (
                   <Bill key={i} bill={bill} pay={props.pay} user={props.user} />
                 )
-              }):(<h1 style={{color:"rgb(237,187,0)"}}>Please Select Hive to View Bills</h1>)}
+              }):(<h1 style={{color:"rgb(237,187,0)"}}>No Bills in This Hive</h1>)}
       
       
       </Paper>

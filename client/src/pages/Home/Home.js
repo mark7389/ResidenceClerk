@@ -31,11 +31,16 @@ class Home extends Component {
       }
       componentDidMount(){
             APIUsers.IsAuth().then(res=>{
-                 APIUsers.getHives().then(hives=>{
-                   console.log(hives);
-                        this.setState({hives:hives.data.hives});
+                 
+                 APIUsers.getRoomMates(res.data.hives[0]).then(mates=>{
+                          this.setState({
+                              currentHive:res.data.hives[0],
+                              hives:res.data.hives,
+                              roommates:mates.data.roommates,
+                              currentUser:mates.data.user
+                          })
                  }).catch(err=>{
-                      console.log(err);
+
                  })
                
             }).catch(err=>{
@@ -75,21 +80,15 @@ class Home extends Component {
               this.setState({billform:dummy});
             }
       }
-      handleSelectionBill = (event, key, payload)=>{
+      handleSelectionBill = (e,status,roommate)=>{
             let dummy = this.state.billform;
-            console.log(payload);
-            payload.map(value=>{
-              dummy.bees.push({name:value});
-            })
+            if(status){
+              dummy.bees.push({name:roommate});
+            }
             this.setState({billform:dummy});
+            
       }
-      selectionRenderer = (value)=>{
-        switch (value.length){
-          case 0: return 'pick roommates';
-          case 1: return this.state.billform.bees[0].name;
-          default: return `${value.length} roommates selected`;
-        }
-      }
+     
       getBills = ()=>{
         APIBills.findAll(this.state.currentHive).then(bills=>{
               this.setState({data:bills.data})
@@ -194,7 +193,7 @@ class Home extends Component {
           case "Add Bill": return <BillForm onChange={this.handleInputChangeBill}
                                             {...this.state.billform}
                                             roommates={this.state.roommates} 
-                                            selectionRenderer={this.selectionRenderer}
+                                            
                                             onRoommateSelect={this.handleSelectionBill}
                                             
                                             createBill={this.createBill}/>;

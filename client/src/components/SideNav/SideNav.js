@@ -19,8 +19,7 @@ const SideNav = (props)=>{
                 <Divider />
                 <MenuItem onClick={props.handleClose} primaryText="Add Bill" value={"BillForm"} />
                 <MenuItem onClick={props.handleClose} primaryText="Add Roommate" value={"RoommatesForm"}/>
-                <MenuItem onClick={props.handleClose} primaryText="View Roommates" value={"Roommates"}/>
-                <MenuItem onClick={props.handleClose} primaryText="Home" value={"Bills"}/>
+                
                 
         </Drawer>
   )

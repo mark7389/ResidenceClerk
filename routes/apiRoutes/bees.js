@@ -7,16 +7,13 @@ router.route("/create").post(beesController.createUser);
 router.route("/login").post(beesController.login);
 router.route("/find/:name").get(beesController.findUser);
 router.route("/grant/:name").get(beesController.grantAccess);
-router.route("/getHives").get(function(req, res){
-    if(req.user){
-        res.json({hives:req.user.hives});
-    }
-})
 router.route("/roommates/:hive").get(beesController.getHiveUsers);
 router.route("/isAuth").get(function(req, res){
         if(req.user){
           if(db[req.user.client]){
-              res.status(200).json({msg:true})
+              res.status(200).json({msg:true,
+                                    user:req.user.client,
+                                    hives:req.user.hives})
           }else{
               res.status(304).json({msg:false});
           }

@@ -14,6 +14,7 @@ module.exports = {
                     console.log(user);
                     if(user.users.length){
                         res.status(304).json({msg:"username not valid or already exits"});
+                        db.close();
                     }
                     else{
                 
@@ -38,6 +39,7 @@ module.exports = {
                                 });
                             });
             }
+            
             });
         }).catch(err=>{
                 res.status(304).send("connection error");

@@ -7,15 +7,13 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DatePicker from 'material-ui/DatePicker'
 import RaisedButton from 'material-ui/RaisedButton/RaisedButton';
+import { Toggle, Divider, FlatButton } from 'material-ui';
 const BillForm = (props)=>{
   const array = catarray.categories;
   let items = array.map((category, i)=>{
     return <MenuItem  key={i+1} value={category} primaryText={category}/>
   })
-  let roommates = props.roommates.map((roommate, i)=>{
-        return <MenuItem  key={i+1} value={roommate} primaryText={roommate}
-         checked={(props.bees.length >= i+1) ? (props.bees[i].name===roommate):false} insetChildren={true}/>
-  })
+  const roommates = ()=>{ }
   const styles={
     border:"2px solid whitesmoke",
     width: "100%",
@@ -56,19 +54,18 @@ const BillForm = (props)=>{
                            >
                            {items}
                            </SelectField>
-              <SelectField
-                  onChange={props.onRoommateSelect} 
-                  floatingLabelText="Set Responsibility"
-                  selectionRenderer={props.selectionRenderer}
-                  multiple={true}
-                  value={props.bees}
-                  >
-                  {roommates}
-                  </SelectField>
-                  <RaisedButton fullWidth={true}
+               <Divider />
+               <h5>Toggle Roommates responsible for this bill</h5>
+                   {props.roommates.map((roommate, i)=>{
+                    return <Toggle key={i} 
+                    label={roommate} onToggle={(e,status)=>props.onRoommateSelect(e,status,roommate)} 
+                            thumbSwitchedStyle={{backgroundColor:"rgb(237,187,0)"}} trackSwitchedStyle={{backgroundColor:"rgb(237,187,0)"}}/>
+              })}
+              <Divider />
+                  <FlatButton fullWidth={true}
                   onClick={props.createBill}
                   backgroundColor="rgb(237,187,0)"
-                  ><h3 style={btnStyle}>Submit</h3></RaisedButton>
+                  ><h3 style={btnStyle}>Submit</h3></FlatButton>
           </form>
         </Paper>
     </div>

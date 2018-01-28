@@ -22,7 +22,7 @@ const RoomMates = (props)=>{
               <RoommateSearch onClick={props.addRoommate} onChange={props.InputChange} />
               <Divider />
               {(props.result === "") ? (<div />):(<h3>{props.result}</h3>)}
-              <FlatButton onClick={props.done}>Done</FlatButton>
+              <FlatButton onClick={props.done} style={{backgroundColor:'rgb(237,187,4)'}}>Done</FlatButton>
     </Paper>
   )
 }
